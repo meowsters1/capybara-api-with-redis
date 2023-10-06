@@ -22,6 +22,11 @@ var ctx = context.Background()
 func main() {
 	godotenv.Load()
 
+	containerId, err := os.Hostname()
+	if err != nil {
+		containerId = "UNKNOWN"
+	}
+
 	capyImages, _ := os.ReadDir("capys")
 	utils.NUMBER_OF_IMAGES = len(capyImages)
 
@@ -85,7 +90,7 @@ func main() {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.JSON(utils.Response{
 			Success: true,
-			Message: "ok you pull up (Powered by hop.io)",
+			Message: "ok you pull up (Powered by hop.io) " + containerId,
 		})
 	})
 
@@ -93,7 +98,7 @@ func main() {
 	v1Group.Get("/", func(c *fiber.Ctx) error {
 		return c.JSON(utils.Response{
 			Success: true,
-			Message: "welcome to v1 of capybara heaven (Powered by hop.io)",
+			Message: "welcome to v1 of capybara heaven (Powered by hop.io) " + containerId,
 		})
 	})
 
