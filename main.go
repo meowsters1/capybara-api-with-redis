@@ -36,9 +36,12 @@ func main() {
 
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS"),
+		Username: os.Getenv("REDIS_USERNAME"),
 		Password: os.Getenv("REDIS_PASSWORD"),
 		DB:       0,
 	})
+
+	println("Attempting connection at ", rdb.Options().Addr, rdb.Options().Username, rdb.Options().Password, rdb.Options().DB)
 
 	if err := rdb.Ping(ctx).Err(); err != nil {
 		log.Fatal(err.Error())
