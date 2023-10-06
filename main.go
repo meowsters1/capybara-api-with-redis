@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"log"
 	"os"
 	"time"
@@ -39,6 +40,9 @@ func main() {
 		Username: os.Getenv("REDIS_USERNAME"),
 		Password: os.Getenv("REDIS_PASSWORD"),
 		DB:       0,
+		TLSConfig: &tls.Config{
+			InsecureSkipVerify: true,
+		},
 	})
 
 	println("Attempting connection at ", rdb.Options().Addr, rdb.Options().Username, rdb.Options().Password, rdb.Options().DB)
