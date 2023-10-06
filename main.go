@@ -69,7 +69,12 @@ func main() {
 	}))
 
 	app.Use(func(c *fiber.Ctx) error {
-		rdb.Incr(ctx, "visits")
+		error := rdb.Incr(ctx, "visits").Err()
+
+		if error != nil {
+			println(error.Error())
+		}
+
 		return c.Next()
 	})
 
