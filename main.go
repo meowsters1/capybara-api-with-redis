@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"log"
 	"os"
 	"time"
@@ -32,11 +33,19 @@ func main() {
 		log.Printf("could not load alt text, using default response: %s", err)
 	}
 
+	var tlsObj *tls.Config = nil
+	if os.Getenv("REDIS_SECURE_SKIP") == "true" {
+		tlsObj = &tls.Config{
+			InsecureSkipVerify: true,
+		}
+	}
+
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS"),
-		Username: os.Getenv("REDIS_USERNAME"),
-		Password: os.Getenv("REDIS_PASSWORD"),
-		DB:       0,
+		Addr:      os.Getenv("REDIS"),
+		Username:  os.Getenv("REDIS_USERNAME"),
+		Password:  os.Getenv("REDIS_PASSWORD"),
+		DB:        0,
+		TLSConfig: tlsObj,
 	})
 
 	println("Attempting connection at ", rdb.Options().Addr, rdb.Options().Username, rdb.Options().Password, rdb.Options().DB)
