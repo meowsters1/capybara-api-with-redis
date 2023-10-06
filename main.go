@@ -35,7 +35,7 @@ func main() {
 	}
 
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "redis.hop:6379",
+		Addr:     os.Getenv("REDIS"),
 		Password: "password",
 		DB:       0,
 	})
