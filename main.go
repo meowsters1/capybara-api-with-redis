@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
 	"time"
@@ -13,7 +14,10 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/looskie/capybara-api/utils"
 	v1 "github.com/looskie/capybara-api/v1"
+	"github.com/redis/go-redis/v9"
 )
+
+var ctx = context.Background()
 
 func main() {
 	godotenv.Load()
@@ -24,6 +28,12 @@ func main() {
 	if err := utils.LoadCapyAlts("utils/alt.json"); err != nil {
 		log.Printf("could not load alt text, using default response: %s", err)
 	}
+
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     "redis.hop:6379",
+		Password: "password",
+		DB:       0,
+	})
 
 	app := fiber.New(fiber.Config{
 		EnableTrustedProxyCheck: true,
@@ -57,6 +67,11 @@ func main() {
 			return c.GetReqHeaders()["X-Forwarded-For"]
 		},
 	}))
+
+	app.Use(func(c *fiber.Ctx) error {
+		rdb.Incr(ctx, "visits")
+		return c.Next()
+	})
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.JSON(utils.Response{
