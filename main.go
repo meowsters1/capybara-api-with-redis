@@ -39,7 +39,7 @@ func main() {
 		Password: os.Getenv("REDIS_PASSWORD"),
 		DB:       0,
 		TLSConfig: &tls.Config{
-			InsecureSkipVerify: true,
+			InsecureSkipVerify: os.Getenv("REDIS_SECURE_SKIP") == "true",
 		},
 	})
 
