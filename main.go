@@ -18,6 +18,17 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+func ping(r *redis.Client) {
+	for range time.Tick(time.Second * 10) {
+		log.Println("Pinging")
+
+		if err := r.Ping(context.Background()).Err(); err != nil {
+			log.Fatal(err.Error())
+			break
+		}
+	}
+}
+
 func main() {
 	godotenv.Load()
 
@@ -48,11 +59,9 @@ func main() {
 		TLSConfig: tlsObj,
 	})
 
-	println("Attempting connection at ", rdb.Options().Addr, rdb.Options().Username, rdb.Options().Password, rdb.Options().DB)
+	go ping(rdb)
 
-	if err := rdb.Ping(context.Background()).Err(); err != nil {
-		log.Fatal(err.Error())
-	}
+	println("Attempting connection at ", rdb.Options().Addr, rdb.Options().Username, rdb.Options().Password, rdb.Options().DB)
 
 	app := fiber.New(fiber.Config{
 		EnableTrustedProxyCheck: true,
