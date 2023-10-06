@@ -18,9 +18,8 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-var ctx = context.Background()
-
 func main() {
+	var ctx = context.Background()
 	godotenv.Load()
 
 	containerId, err := os.Hostname()
