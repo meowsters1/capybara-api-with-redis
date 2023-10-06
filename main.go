@@ -19,7 +19,6 @@ import (
 )
 
 func main() {
-	var ctx = context.Background()
 	godotenv.Load()
 
 	containerId, err := os.Hostname()
@@ -46,7 +45,7 @@ func main() {
 
 	println("Attempting connection at ", rdb.Options().Addr, rdb.Options().Username, rdb.Options().Password, rdb.Options().DB)
 
-	if err := rdb.Ping(ctx).Err(); err != nil {
+	if err := rdb.Ping(context.Background()).Err(); err != nil {
 		log.Fatal(err.Error())
 	}
 
@@ -84,7 +83,7 @@ func main() {
 	}))
 
 	app.Use(func(c *fiber.Ctx) error {
-		error := rdb.Incr(ctx, "visits").Err()
+		error := rdb.Incr(context.Background(), "visits").Err()
 
 		if error != nil {
 			println(error.Error())
