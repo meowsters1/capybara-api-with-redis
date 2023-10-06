@@ -35,6 +35,10 @@ func main() {
 		DB:       0,
 	})
 
+	if err := rdb.Ping(ctx); err != nil {
+		log.Fatal(err)
+	}
+
 	app := fiber.New(fiber.Config{
 		EnableTrustedProxyCheck: true,
 		TrustedProxies:          []string{"10.50.0.0/24"},
