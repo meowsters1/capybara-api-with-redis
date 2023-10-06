@@ -35,8 +35,8 @@ func main() {
 		DB:       0,
 	})
 
-	if err := rdb.Ping(ctx); err != nil {
-		log.Fatal(err)
+	if err := rdb.Ping(ctx).Err(); err != nil {
+		log.Fatal(err.Error())
 	}
 
 	app := fiber.New(fiber.Config{
